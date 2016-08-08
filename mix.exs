@@ -5,6 +5,8 @@ defmodule ExbufPlug.Mixfile do
     [app: :exbuf_plug,
      version: "0.0.1",
      elixir: "~> 1.2",
+     description: "A small plug to handle decoding protocol buffers.",
+     package: package(),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps]
@@ -31,6 +33,14 @@ defmodule ExbufPlug.Mixfile do
       {:cowboy, "~> 1.0.0"},
       {:plug, "~> 1.0"},
       {:exprotobuf, "~> 1.1", only: :test}
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Garrett Heinlen"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/gogogarrett/exbuf_plug"}
     ]
   end
 end
