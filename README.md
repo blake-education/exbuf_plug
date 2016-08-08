@@ -106,7 +106,7 @@ base64 = Protobuf.TestEvent.new(
 With this base64 encoded string, we can easily post this over HTTP. Imagine some javascript posting to create an event with this base64 string
 
 ```js
-post("api/v3/event", {event: "CAISCEJpbGwgTnllGg9UaGUgc2NpZW5jZSBndXk="}, {headers: {"x-protobuf": "BiggerTestEvent"}})
+post("api/v3/event", {event: "CAISCEJpbGwgTnllGg9UaGUgc2NpZW5jZSBndXk="}, {headers: {"x-protobuf": "TestEvent"}})
 ```
 
 In elixir it would be better to deal with the protobuf struct, so by adding this plug into any plug app, we can easily deal with
@@ -119,7 +119,7 @@ defmodule MyApp.MyController do
   plug ExbufPlug, [param_key: "event"]
 
   def show(conn, _params) do
-    conn.assigns.protobuf_struct == %ExbufPlug.Protobufs.BiggerTestEvent{
+    conn.assigns.protobuf_struct == %ExbufPlug.Protobufs.TestEvent{
       title: :sucker,
       name: "Bill Nye",
       desc: "The science guy"
