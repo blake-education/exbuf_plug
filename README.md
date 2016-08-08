@@ -103,11 +103,9 @@ base64 = Protobuf.TestEvent.new(
 # "CAISCEJpbGwgTnllGg9UaGUgc2NpZW5jZSBndXk="
 ```
 
-With this base64 encoded string, we can now make use of this plug and get a nice struct to deal with
-on the outside of it.
+With this base64 encoded string, we can easily post this over HTTP. Imagine some javascript posting to create an event with this base64 string
 
 ```js
-// Imagine some javascript posting to create an event with this base64 string
 post("api/v3/event", {event: "CAISCEJpbGwgTnllGg9UaGUgc2NpZW5jZSBndXk="})
 ```
 
