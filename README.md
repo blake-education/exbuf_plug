@@ -51,6 +51,16 @@ The items in the configuration allow you to tailor how the decoding behaves.
 * `module_name` - The main module that implements `exprotobuf` to be used for encoding/decoding protobufs.
 * `header_name` - The header name to look for to know which protobuf to use for decoding
 
+Given the config above, ExbufPlug will attempt to decode the protobuf using the module `ExbufPlug.Protobufs`.
+
+A simple example might look like this.
+
+```elixir
+defmodule ExbufPlug.Protobufs do
+  use Protobuf, from: Path.expand("./protocol_buffers.proto", __DIR__)
+end
+```
+
 
 ## Phoenix Controllers
 
