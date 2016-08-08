@@ -1,0 +1,14 @@
+enum AllowedTitles {
+  awesomer = 1;
+  sucker = 2;
+}
+
+message TestEvent {
+  required AllowedTitles title = 1;
+}
+
+message BiggerTestEvent {
+  required AllowedTitles title = 1;
+  required string name = 2;
+  required string desc = 3;
+}

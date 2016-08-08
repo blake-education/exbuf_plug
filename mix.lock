@@ -1,0 +1,6 @@
+%{"cowboy": {:hex, :cowboy, "1.0.4", "a324a8df9f2316c833a470d918aaf73ae894278b8aa6226ce7a9bf699388f878", [:rebar, :make], [{:cowlib, "~> 1.0.0", [hex: :cowlib, optional: false]}, {:ranch, "~> 1.0", [hex: :ranch, optional: false]}]},
+  "cowlib": {:hex, :cowlib, "1.0.2", "9d769a1d062c9c3ac753096f868ca121e2730b9a377de23dec0f7e08b1df84ee", [:make], []},
+  "exprotobuf": {:hex, :exprotobuf, "1.1.0", "0d91a0b527abac118e03361d12eac7262299cdda3a0316fc60763557c227c890", [:mix], [{:gpb, "~> 3.24", [hex: :gpb, optional: false]}]},
+  "gpb": {:hex, :gpb, "3.24.4", "a55e2c7c23212582340596212756f9022d50611feec2040272e20c13b947df44", [:rebar, :make], []},
+  "plug": {:hex, :plug, "1.1.6", "8927e4028433fcb859e000b9389ee9c37c80eb28378eeeea31b0273350bf668b", [:mix], [{:cowboy, "~> 1.0", [hex: :cowboy, optional: true]}]},
+  "ranch": {:hex, :ranch, "1.2.1", "a6fb992c10f2187b46ffd17ce398ddf8a54f691b81768f9ef5f461ea7e28c762", [:make], []}}

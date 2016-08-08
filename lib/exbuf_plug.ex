@@ -1,0 +1,71 @@
+defmodule ExbufPlug do
+  @moduledoc """
+  A plug to convert request information into protobufs
+
+  We look for a header called `x-protobuf` and a base64 encoded string in params.
+  We decode these into application specific protobufs to be used throughout the rest of the request
+  """
+  import Plug.Conn
+
+  # config :exbuf_plug, ExbufPlug, %{
+  #   list: [
+  #     "TestEvent",
+  #     "BiggerTestEvent"
+  #   ],
+  #   namespace: "ExbufPlug",
+  #   module_name: "Protobufs",
+  #   header_name: "x-protobuf"
+  # }
+  @protoconfig Application.get_env(:exbuf_plug, ExbufPlug)
+  @protobufs @protoconfig.list
+  @protobufs_namespace @protoconfig.namespace
+  @protobufs_module @protoconfig.module_name
+  @protobufs_header @protoconfig.header_name
+
+  @doc """
+  We fetch param_key from options
+  With this params_key we use it to fetch in the base64 string from the plug's `params`
+  """
+  def init(options), do: Keyword.get(options, :param_key)
+
+  def call(conn, param_key) do
+    case decode_into_proto_struct(conn, param_key) do
+      proto_struct when is_map(proto_struct) ->
+        conn
+        |> assign(:protobuf_struct, proto_struct)
+      _ ->
+        conn
+        |> send_resp(400, "invalid request params.")
+        |> halt
+    end
+  end
+
+  defp decode_into_proto_struct(conn = %Plug.Conn{params: params}, param_key) do
+    with params <- Map.get(params, param_key),
+         {:ok, binary} <- prepare_binary(params),
+         {:ok, decoder} <- protobuf_struct(proto_type(conn)) do
+
+      decoder.decode(binary)
+    end
+  end
+
+  defp prepare_binary(string) do
+    string
+    |> Base.decode64
+  end
+
+  defp protobuf_struct(proto_type) do
+    case Enum.find(@protobufs, &(&1 == proto_type)) do
+      nil ->
+        {:error, "invalid protobuf type"}
+      _protobuf ->
+        {:ok, :"Elixir.#{@protobufs_namespace}.#{@protobufs_module}.#{proto_type}"}
+    end
+  end
+
+  defp proto_type(conn) do
+    conn
+    |> get_req_header(@protobufs_header)
+    |> List.first
+  end
+end
