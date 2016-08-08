@@ -51,11 +51,14 @@ The items in the configuration allow you to tailor how the decoding behaves.
 * `module_name` - The main module that implements `exprotobuf` to be used for encoding/decoding protobufs.
 * `header_name` - The header name to look for to know which protobuf to use for decoding
 
-### Phoenix Controllers
+
+## Phoenix Controllers
 
 ExbufPlug hooks easily into Phoenix controllers.
 
 It allows you to specify which key in the params should be used to decode the protobuf.
+
+The decoded value will assigned to the `conn.protobuf_struct` for your use throughout the request.
 
 ```elixir
 defmodule MyApp.MyController do
@@ -65,6 +68,7 @@ defmodule MyApp.MyController do
 
   def index(conn, params, user, claims) do
     # do stuff in here
+    conn.protobuf_struct # will contain your decoded protobuf struct
   end
 end
 ```
