@@ -6,7 +6,7 @@ A small plug to handle decoding protocol buffers.
 ExbufPlug is a wrapper around [exprotobuf](https://github.com/bitwalker/exprotobuf) to handle dealing with
 protobufs over http.
 
-The strategy here is to decode a protocol buffer into a base64 string and send it over http - which this plug will
+The strategy here is to decode a protocol buffer into binary and send it over http - which this plug will
 decode into an elixir struct to deal with in your application.
 
 ## Useful articles
@@ -66,15 +66,13 @@ end
 
 ExbufPlug hooks easily into Phoenix controllers.
 
-It allows you to specify which key in the params should be used to decode the protobuf.
-
 The decoded value will assigned to the `conn.protobuf_struct` for your use throughout the request.
 
 ```elixir
 defmodule MyApp.MyController do
   use MyApp.Web, :controller
 
-  plug ExbufPlug, [param_key: "event"]
+  plug ExbufPlug
 
   def show(conn, _params) do
     conn.assigns.protobuf_struct
@@ -99,7 +97,7 @@ message TestEvent {
 }
 ```
 
-We can get a base64 encoded version of this protobuf with the following
+We can get the encoded version of this protobuf with the following
 
 ```elixir
 # encode protobuf and encode into base64
@@ -109,14 +107,22 @@ base64 = Protobuf.TestEvent.new(
   desc: "The science guy"
 )
 |> Protobuf.TestEvent.encode
-|> Base.encode64
-# "CAISCEJpbGwgTnllGg9UaGUgc2NpZW5jZSBndXk="
+# <<8, 2, 18, 8, 66, 105, 108, 108, 32, 78, 121, 101, 26, 15, 84, 104, 101, 32, 115, 99, 105, 101, 110, 99, 101, 32, 103, 117, 121>>
 ```
 
-With this base64 encoded string, we can easily post this over HTTP. Imagine some javascript posting to create an event with this base64 string
+With this binary, we can post this over HTTP. Imagine some language sending this post to create an event.
 
-```js
-post("api/v3/event", {event: "CAISCEJpbGwgTnllGg9UaGUgc2NpZW5jZSBndXk="}, {headers: {"x-protobuf": "TestEvent"}})
+```elixir
+# not real code.. :troll:
+client = HttpThing.new(host: "http://localhost:4000")
+client.post(
+  "api/v3/event",
+  { body: <<8, 2, 18, 8, 66, 105, 108, 108, 32, 78, 121, 101, 26, 15, 84, 104, 101, 32, 115, 99, 105, 101, 110, 99, 101, 32, 103, 117, 121>> },
+  { headers: [
+    {"Content-Type": "application/octet-stream"}
+    {"x-protobuf": "TestEvent"}
+  ]},
+)
 ```
 
 In elixir it would be better to deal with the protobuf struct, so by adding this plug into any plug app, we can easily deal with
@@ -126,7 +132,7 @@ pure elixir structs.
 defmodule MyApp.MyController do
   use MyApp.Web, :controller
 
-  plug ExbufPlug, [param_key: "event"]
+  plug ExbufPlug
 
   def show(conn, _params) do
     conn.assigns.protobuf_struct == %ExbufPlug.Protobufs.TestEvent{
