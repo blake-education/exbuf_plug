@@ -2,7 +2,7 @@ defmodule ExbufPlug do
   @moduledoc """
   A plug to convert request information into protobufs
 
-  We look for a header called `x-protobuf` and a base64 encoded string in params.
+  We look for a header called `x-protobuf` and a binary body.
   We decode these into application specific protobufs to be used throughout the rest of the request
   """
   import Plug.Conn
@@ -26,10 +26,10 @@ defmodule ExbufPlug do
   We fetch param_key from options
   With this params_key we use it to fetch in the base64 string from the plug's `params`
   """
-  def init(options), do: Keyword.get(options, :param_key)
+  def init(options), do: options
 
-  def call(conn, param_key) do
-    case decode_into_proto_struct(conn, param_key) do
+  def call(conn, _options) do
+    case decode_into_proto_struct(conn) do
       proto_struct when is_map(proto_struct) ->
         conn
         |> assign(:protobuf_struct, proto_struct)
@@ -40,18 +40,17 @@ defmodule ExbufPlug do
     end
   end
 
-  defp decode_into_proto_struct(conn = %Plug.Conn{params: params}, param_key) do
-    with params <- Map.get(params, param_key),
-         {:ok, binary} <- prepare_binary(params),
+  def decode_into_proto_struct(conn) do
+    with {:ok, binary, conn} = fetch_binary(conn),
          {:ok, decoder} <- protobuf_struct(proto_type(conn)) do
 
       decoder.decode(binary)
     end
   end
 
-  defp prepare_binary(string) do
-    string
-    |> Base.decode64
+  defp fetch_binary(conn) do
+    conn
+    |> read_body
   end
 
   defp protobuf_struct(proto_type) do
