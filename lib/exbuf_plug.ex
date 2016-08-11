@@ -41,10 +41,16 @@ defmodule ExbufPlug do
   end
 
   def decode_into_proto_struct(conn) do
-    with {:ok, binary, conn} = fetch_binary(conn),
-         {:ok, decoder} <- protobuf_struct(proto_type(conn)) do
-
-      decoder.decode(binary)
+    case fetch_binary(conn) do
+      {:ok, binary, conn} ->
+        case protobuf_struct(proto_type(conn)) do
+          {:ok, decoder} ->
+            decoder.decode(binary)
+          _ ->
+            :error
+        end
+      _ ->
+        :error
     end
   end
 
