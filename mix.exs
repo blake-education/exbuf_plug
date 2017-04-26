@@ -3,13 +3,13 @@ defmodule ExbufPlug.Mixfile do
 
   def project do
     [app: :exbuf_plug,
-     version: "0.0.5",
+     version: "0.0.6",
      elixir: "~> 1.2",
      description: "A small plug to handle decoding protocol buffers.",
      package: package(),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps()]
   end
 
   # Configuration for the OTP application
