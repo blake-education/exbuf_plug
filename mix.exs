@@ -3,7 +3,7 @@ defmodule ExbufPlug.Mixfile do
 
   def project do
     [app: :exbuf_plug,
-     version: "0.0.4",
+     version: "0.0.5",
      elixir: "~> 1.2",
      description: "A small plug to handle decoding protocol buffers.",
      package: package(),
