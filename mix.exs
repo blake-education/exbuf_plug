@@ -36,7 +36,7 @@ defmodule ExbufPlug.Mixfile do
     [
       {:cowboy, "~> 2.6"},
       {:plug, "~> 1.7"},
-      {:exprotobuf, "~> 1.1", only: :test},
+      {:exprotobuf, "~> 1.2", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
