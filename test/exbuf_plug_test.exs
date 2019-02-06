@@ -20,7 +20,7 @@ defmodule ExbufPlugTest do
 
   test "happy path" do
     conn =
-      conn("post", "/anything", sucker_event)
+      conn("post", "/anything", sucker_event())
       |> put_req_header("content-type", "application/octet-stream")
       |> put_req_header("x-protobuf", "TestEvent")
       |> ExbufPlug.call(@opts)
@@ -30,7 +30,7 @@ defmodule ExbufPlugTest do
            }
 
     conn =
-      conn("post", "/anything", awesomer_event)
+      conn("post", "/anything", awesomer_event())
       |> put_req_header("content-type", "application/octet-stream")
       |> put_req_header("x-protobuf", "TestEvent")
       |> ExbufPlug.call(@opts)
@@ -54,7 +54,7 @@ defmodule ExbufPlugTest do
 
   test "no x-prototype header" do
     conn =
-      conn("post", "/anything", sucker_event)
+      conn("post", "/anything", sucker_event())
       |> put_req_header("content-type", "application/octet-stream")
       |> ExbufPlug.call(@opts)
 
