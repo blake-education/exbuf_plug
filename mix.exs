@@ -5,7 +5,7 @@ defmodule ExbufPlug.Mixfile do
     [
       app: :exbuf_plug,
       version: "0.1.0",
-      elixir: "~> 1.8",
+      elixir: "~> 1.2",
       description: "A small plug to handle decoding protocol buffers.",
       package: package(),
       build_embedded: Mix.env() == :prod,
