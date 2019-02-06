@@ -19,38 +19,42 @@ defmodule ExbufPlugTest do
   end
 
   test "happy path" do
-    conn = conn("post", "/anything", sucker_event)
+    conn =
+      conn("post", "/anything", sucker_event())
       |> put_req_header("content-type", "application/octet-stream")
       |> put_req_header("x-protobuf", "TestEvent")
       |> ExbufPlug.call(@opts)
 
     assert conn.assigns.protobuf_struct == %ExbufPlug.Protobufs.TestEvent{
-      title: :sucker,
-    }
+             title: :sucker
+           }
 
-    conn = conn("post", "/anything", awesomer_event)
+    conn =
+      conn("post", "/anything", awesomer_event())
       |> put_req_header("content-type", "application/octet-stream")
       |> put_req_header("x-protobuf", "TestEvent")
       |> ExbufPlug.call(@opts)
 
     assert conn.assigns.protobuf_struct == %ExbufPlug.Protobufs.TestEvent{
-      title: :awesomer,
-    }
+             title: :awesomer
+           }
   end
 
   test "nil binary body returns nil/default struct" do
-    conn = conn("post", "/anything", nil)
+    conn =
+      conn("post", "/anything", nil)
       |> put_req_header("content-type", "application/octet-stream")
       |> put_req_header("x-protobuf", "TestEvent")
       |> ExbufPlug.call(@opts)
 
     assert conn.assigns.protobuf_struct == %ExbufPlug.Protobufs.TestEvent{
-      title: nil,
-    }
+             title: nil
+           }
   end
 
   test "no x-prototype header" do
-    conn = conn("post", "/anything", sucker_event)
+    conn =
+      conn("post", "/anything", sucker_event())
       |> put_req_header("content-type", "application/octet-stream")
       |> ExbufPlug.call(@opts)
 
@@ -58,22 +62,24 @@ defmodule ExbufPlugTest do
   end
 
   test "more complex protobuf" do
-    binary = build_binary(
-      ExbufPlug.Protobufs.BiggerTestEvent,
-      title: :sucker,
-      name: "Bill Nye",
-      desc: "The science guy"
-    )
+    binary =
+      build_binary(
+        ExbufPlug.Protobufs.BiggerTestEvent,
+        title: :sucker,
+        name: "Bill Nye",
+        desc: "The science guy"
+      )
 
-    conn = conn("post", "/anything", binary)
+    conn =
+      conn("post", "/anything", binary)
       |> put_req_header("x-protobuf", "BiggerTestEvent")
       |> put_req_header("content-type", "application/octet-stream")
       |> ExbufPlug.call(@opts)
 
     assert conn.assigns.protobuf_struct == %ExbufPlug.Protobufs.BiggerTestEvent{
-      title: :sucker,
-      name: "Bill Nye",
-      desc: "The science guy"
-    }
+             title: :sucker,
+             name: "Bill Nye",
+             desc: "The science guy"
+           }
   end
 end
