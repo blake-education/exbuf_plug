@@ -34,10 +34,10 @@ defmodule ExbufPlug.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:cowboy, "~> 1.1.0"},
-      {:plug, "~> 1.0"},
+      {:cowboy, "~> 2.6"},
+      {:plug, "~> 1.7"},
       {:exprotobuf, "~> 1.1", only: :test},
-      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 
