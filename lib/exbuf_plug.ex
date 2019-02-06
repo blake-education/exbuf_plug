@@ -33,6 +33,7 @@ defmodule ExbufPlug do
       proto_struct when is_map(proto_struct) ->
         conn
         |> assign(:protobuf_struct, proto_struct)
+
       _ ->
         conn
         |> send_resp(400, "invalid request params.")
@@ -46,9 +47,11 @@ defmodule ExbufPlug do
         case protobuf_struct(proto_type(conn)) do
           {:ok, decoder} ->
             decoder.decode(binary)
+
           _ ->
             :error
         end
+
       _ ->
         :error
     end
@@ -63,6 +66,7 @@ defmodule ExbufPlug do
     case Enum.find(@protobufs, &(&1 == proto_type)) do
       nil ->
         {:error, "invalid protobuf type"}
+
       _protobuf ->
         {:ok, :"Elixir.#{@protobufs_namespace}.#{@protobufs_module}.#{proto_type}"}
     end
@@ -71,6 +75,6 @@ defmodule ExbufPlug do
   defp proto_type(conn) do
     conn
     |> get_req_header(@protobufs_header)
-    |> List.first
+    |> List.first()
   end
 end
