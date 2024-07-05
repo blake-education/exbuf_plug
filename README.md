@@ -1,5 +1,4 @@
-ExbufPlug
-========
+# ExbufPlug
 
 A small plug to handle decoding protocol buffers.
 
@@ -61,12 +60,11 @@ defmodule ExbufPlug.Protobufs do
 end
 ```
 
-
 ## Phoenix Controllers
 
 ExbufPlug hooks easily into Phoenix controllers.
 
-The decoded value will assigned to the `conn.protobuf_struct` for your use throughout the request.
+The decoded value will assigned to the `conn.assigns.protobuf_struct` for your use throughout the request.
 
 ```elixir
 defmodule MyApp.MyController do
@@ -79,6 +77,17 @@ defmodule MyApp.MyController do
   end
 end
 ```
+
+### Multipart support
+
+Muiltiple messages can be sent in a single request by using multipart form data. The content-type must be set correctly
+for this to work (either `multipart/form-data` or `multipart/mixed`).
+
+The names of the encoded protobuf binary fields is ignored. Just ensure they are different from each other.
+
+In this case, the assigns variable is plural, ie. `conn.assigns.protobuf_structs`.
+
+All the messages must be the same protobuf, specified in the `x-protobuf` header.
 
 ### Small Example
 

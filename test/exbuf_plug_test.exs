@@ -82,4 +82,32 @@ defmodule ExbufPlugTest do
              desc: "The science guy"
            }
   end
+
+  test "multipart support" do
+    binary_1 =
+      build_binary(
+        ExbufPlug.Protobufs.BiggerTestEvent,
+        title: :sucker,
+        name: "Bill Nye",
+        desc: "The science guy"
+      )
+
+    binary_2 =
+      build_binary(
+        ExbufPlug.Protobufs.BiggerTestEvent,
+        title: :sucker,
+        name: "Kermit",
+        desc: "The frog"
+      )
+
+    conn =
+      conn("post", "/anything", %{"1" => binary_1, "2" => binary_2})
+      |> put_req_header("x-protobuf", "BiggerTestEvent")
+      |> ExbufPlug.call(@opts)
+
+    assert conn.assigns.protobuf_structs == [
+             %ExbufPlug.Protobufs.BiggerTestEvent{title: :sucker, name: "Bill Nye", desc: "The science guy"},
+             %ExbufPlug.Protobufs.BiggerTestEvent{title: :sucker, name: "Kermit", desc: "The frog"}
+           ]
+  end
 end
