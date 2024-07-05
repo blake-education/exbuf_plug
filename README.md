@@ -80,7 +80,7 @@ end
 
 ### Multipart support
 
-Muiltiple messages can be sent in a single request by using multipart form data. The content-type must be set correctly
+Multiple messages can be sent in a single request by using multipart form data. The content-type must be set correctly
 for this to work (either `multipart/form-data` or `multipart/mixed`).
 
 The names of the encoded protobuf binary fields is ignored. Just ensure they are different from each other.
