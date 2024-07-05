@@ -16,7 +16,7 @@ defmodule ExbufPlug do
   #   module_name: "Protobufs",
   #   header_name: "x-protobuf"
   # }
-  @protoconfig Application.get_env(:exbuf_plug, ExbufPlug)
+  @protoconfig Application.compile_env(:exbuf_plug, ExbufPlug)
   @protobufs @protoconfig.list
   @protobufs_namespace @protoconfig.namespace
   @protobufs_module @protoconfig.module_name
@@ -29,43 +29,55 @@ defmodule ExbufPlug do
   def init(options), do: options
 
   def call(conn, _options) do
-    case decode_into_proto_struct(conn) do
-      proto_struct when is_map(proto_struct) ->
-        conn
-        |> assign(:protobuf_struct, proto_struct)
+    with {:ok, decoder} <- protobuf_struct(proto_type(conn)) do
+      content_type = content_type(conn)
 
-      _ ->
+      case decode_into_proto_struct(content_type, conn, decoder) do
+        {:ok, proto_structs} when is_list(proto_structs) ->
+          conn
+          |> assign(:protobuf_structs, proto_structs)
+
+        {:ok, proto_struct} ->
+          conn
+          |> assign(:protobuf_struct, proto_struct)
+      end
+    else
+      {:error, error} ->
         conn
-        |> send_resp(400, "invalid request params.")
+        |> send_resp(400, error)
         |> halt
     end
   end
 
-  def decode_into_proto_struct(conn) do
-    case fetch_binary(conn) do
-      {:ok, binary, conn} ->
-        case protobuf_struct(proto_type(conn)) do
-          {:ok, decoder} ->
-            decoder.decode(binary)
-
-          _ ->
-            :error
-        end
-
-      _ ->
-        :error
+  defp content_type(conn) do
+    with [content_type | _] <- Plug.Conn.get_req_header(conn, "content-type"),
+         {:ok, type, _subtype, _params} <- Plug.Conn.Utils.content_type(content_type) do
+      type
+    else
+      [] -> "absent"
+      :error -> "parse-error"
     end
   end
 
-  defp fetch_binary(conn) do
-    conn
-    |> read_body
+  defp decode_into_proto_struct("multipart", %{params: params}, decoder) do
+    decoded_protobufs =
+      params
+      |> Enum.map(fn {_k, encoded_protobuf} -> decoder.decode(encoded_protobuf) end)
+
+    {:ok, decoded_protobufs}
+  end
+
+  defp decode_into_proto_struct(_content_type, conn, decoder) do
+    case read_body(conn) do
+      {:ok, binary, _conn} -> {:ok, decoder.decode(binary)}
+      error -> error
+    end
   end
 
   defp protobuf_struct(proto_type) do
     case Enum.find(@protobufs, &(&1 == proto_type)) do
       nil ->
-        {:error, "invalid protobuf type"}
+        {:error, "invalid protobuf type: #{proto_type}"}
 
       _protobuf ->
         {:ok, :"Elixir.#{@protobufs_namespace}.#{@protobufs_module}.#{proto_type}"}

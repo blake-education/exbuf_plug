@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :exbuf_plug, ExbufPlug, %{
   list: [

@@ -4,8 +4,8 @@ defmodule ExbufPlug.Mixfile do
   def project do
     [
       app: :exbuf_plug,
-      version: "0.1.0",
-      elixir: "~> 1.2",
+      version: "1.0.0",
+      elixir: "~> 1.15",
       description: "A small plug to handle decoding protocol buffers.",
       package: package(),
       build_embedded: Mix.env() == :prod,
@@ -20,7 +20,7 @@ defmodule ExbufPlug.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :cowboy, :plug]]
+    [extra_applications: [:logger]]
   end
 
   # Dependencies can be Hex packages:
@@ -34,8 +34,8 @@ defmodule ExbufPlug.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:cowboy, "~> 2.6"},
-      {:plug, "~> 1.7"},
+      {:cowboy, "~> 2.12"},
+      {:plug, "~> 1.16"},
       {:exprotobuf, "~> 1.2", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev}
     ]
