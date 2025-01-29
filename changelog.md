@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-01-29
+
+### Added
+
+- bump Elixir to 1.16.3 and Erlang to 26.2.5.6 for testing
+- change package dependency from `ex_protobufs` to `protobufs`, this is a potentially breaking change:
+  - when decoding, the nested complex types are now the relevant struct, not a map
+  - run `mix deps.unlock --unused` to clean up your `mix.lock` file.
+
 ## [1.0.0] - 2024-07-05
 
 ### Added

@@ -3,9 +3,10 @@ defmodule ExbufPlug.Mixfile do
 
   def project do
     [
+      aliases: aliases(Mix.env()),
       app: :exbuf_plug,
-      version: "1.0.0",
-      elixir: "~> 1.15",
+      version: "2.0.0",
+      elixir: "~> 1.16",
       description: "A small plug to handle decoding protocol buffers.",
       package: package(),
       build_embedded: Mix.env() == :prod,
@@ -13,6 +14,12 @@ defmodule ExbufPlug.Mixfile do
       deps: deps(),
       description: description(),
       package: package()
+    ]
+  end
+
+  def aliases(_env) do
+    [
+      test: ["exbuf_plug.protoc", "test"]
     ]
   end
 
@@ -35,9 +42,9 @@ defmodule ExbufPlug.Mixfile do
   defp deps do
     [
       {:cowboy, "~> 2.12"},
+      {:ex_doc, ">= 0.0.0", only: :dev},
       {:plug, "~> 1.16"},
-      {:exprotobuf, "~> 1.2", only: :test},
-      {:ex_doc, ">= 0.0.0", only: :dev}
+      {:protobuf, "~> 0.14.0"}
     ]
   end
 
