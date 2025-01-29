@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Protoc do
+defmodule Mix.Tasks.ExbufPlug.Protoc do
   use Mix.Task
 
   @shortdoc "Generate the protobuf modules from blake.proto"

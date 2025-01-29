@@ -19,7 +19,7 @@ defmodule ExbufPlug.Mixfile do
 
   def aliases(_env) do
     [
-      test: ["protoc", "test"]
+      test: ["exbuf_plug.protoc", "test"]
     ]
   end
 
