@@ -5,7 +5,7 @@ defmodule ExbufPlug.Mixfile do
     [
       aliases: aliases(Mix.env()),
       app: :exbuf_plug,
-      version: "2.0.0",
+      version: "2.0.1",
       elixir: "~> 1.16",
       description: "A small plug to handle decoding protocol buffers.",
       package: package(),
@@ -44,7 +44,7 @@ defmodule ExbufPlug.Mixfile do
       {:cowboy, "~> 2.12"},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:plug, "~> 1.16"},
-      {:protobuf, "~> 0.14.0"}
+      {:protobuf, "~> 0.15.0"}
     ]
   end
 

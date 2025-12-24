@@ -5,9 +5,10 @@ defmodule ExbufPlugTest do
 
   @opts ExbufPlug.init([])
 
-  defp build_binary(struct, values) do
-    struct.new(values)
-    |> struct.encode
+  defp build_binary(test_struct, values) do
+    test_struct
+    |> struct(values)
+    |> test_struct.encode
   end
 
   def awesomer_event do
